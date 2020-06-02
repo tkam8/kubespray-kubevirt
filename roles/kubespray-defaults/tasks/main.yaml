@@ -1,0 +1,31 @@
+---
+- name: Configure defaults
+  debug:
+    msg: "Check roles/kubespray-defaults/defaults/main.yml"
+  tags:
+    - always
+
+# cluster_id hostvar is required: https://github.com/kubernetes-sigs/kubespray/blob/61e7afa9f03a609a54e0c4361dac320eacfe9ba8/docs/calico.md
+- name: set calico cluster_id as required
+  set_fact:
+    cluster_id: "1.0.0.1"
+  when:
+    - inventory_hostname == groups['kube-master'][0]
+
+# do not run gather facts when bootstrap-os in roles
+- name: set fallback_ips
+  include_tasks: fallback_ips.yml
+  when:
+    - "'bootstrap-os' not in ansible_play_role_names"
+    - fallback_ips is not defined
+  tags:
+    - always
+
+- name: set no_proxy
+  include_tasks: no_proxy.yml
+  when:
+    - "'bootstrap-os' not in ansible_play_role_names"
+    - http_proxy is defined or https_proxy is defined
+    - no_proxy is not defined
+  tags:
+    - always

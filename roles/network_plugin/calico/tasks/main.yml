@@ -1,0 +1,20 @@
+---
+# Ensuring these vars are set 
+# internal network node size allocation (optional). This is the size allocated
+# to each node on your network.  For IPv6, (IPv6 block size must be between 116 and 128)
+- name: set calico block size
+  set_fact:
+    kube_network_node_prefix: 122
+
+- import_tasks: check.yml
+
+- import_tasks: pre.yml
+
+- include_tasks: upgrade.yml
+  when:
+    - calico_upgrade_enabled
+    - calico_upgrade_needed
+    - inventory_hostname in groups['kube-master']
+  run_once: yes
+
+- include_tasks: install.yml
