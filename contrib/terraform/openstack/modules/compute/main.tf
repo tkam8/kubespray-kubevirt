@@ -220,6 +220,40 @@ resource "openstack_compute_servergroup_v2" "k8s_calicorr" {
 //   }
 // }
 
+# PORTS WITH FIXED IPS from subnet of sriov_id
+
+resource "openstack_networking_port_v2" "port1_k8s_node_sriov" {
+  count          = "${var.number_of_k8s_nodes_no_floating_ip}"
+  name           ="${var.cluster_name}-port1-sriov-k8snode-${count.index+1}"
+  network_id     = "${var.sriov_net1_id}"
+  admin_state_up = "true"
+#  security_group_ids = [ "${openstack_networking_secgroup_v2.k8s.id}" , "${openstack_networking_secgroup_v2.worker.id}" ]
+#  security_group_id = "${openstack_networking_secgroup_v2.k8s.id}"
+  fixed_ip {
+    subnet_id = "${var.sriov_net1_subnet1_id}"
+  }
+  value_specs {
+    "binding:vnic_type" = "direct"
+  }
+# SHOULD ATTACH SECURITY GROUPS HERE IN FUTURE
+}
+
+resource "openstack_networking_port_v2" "port2_k8s_node_sriov" {
+  count          = "${var.number_of_k8s_nodes_no_floating_ip}"
+  name           ="${var.cluster_name}-port2-sriov-k8snode-${count.index+1}"
+  network_id     = "${var.sriov_net2_id}"
+  admin_state_up = "true"
+#  security_group_ids = [ "${openstack_networking_secgroup_v2.k8s.id}" , "${openstack_networking_secgroup_v2.worker.id}" ]
+#  security_group_id = "${openstack_networking_secgroup_v2.k8s.id}"
+  fixed_ip {
+    subnet_id = "${var.sriov_net2_subnet1_id}"
+  }
+  value_specs {
+    "binding:vnic_type" = "direct"
+  }
+# SHOULD ATTACH SECURITY GROUPS HERE IN FUTURE
+}
+
 resource "openstack_compute_instance_v2" "k8s_master" {
   name              = "${var.cluster_name}-k8s-master-${count.index + 1}"
   count             = "${var.number_of_k8s_masters}"
@@ -355,6 +389,10 @@ resource "openstack_compute_instance_v2" "calicorr" {
 
   network {
     name = "${var.network2_name}"
+  }
+
+  network {
+    port = "${element(openstack_networking_port_v2.port1_k8s_node_sriov.*.id, count.index+1)}"
   }
 
   security_groups = ["${openstack_networking_secgroup_v2.k8s.name}"]
@@ -598,7 +636,15 @@ resource "openstack_compute_instance_v2" "k8s_node_no_floating_ip" {
   }
 
   network {
-    name = "${var.network2_name}"
+    port = "${var.network2_name}"
+  }
+
+  network {
+    port = "${element(openstack_networking_port_v2.port1_k8s_node_sriov.*.id, count.index+1)}"
+  }
+
+  network {
+    port = "${element(openstack_networking_port_v2.port2_k8s_node_sriov.*.id, count.index+1)}"
   }
 
   security_groups = ["${openstack_networking_secgroup_v2.k8s.name}",
