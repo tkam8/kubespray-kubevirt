@@ -636,7 +636,7 @@ resource "openstack_compute_instance_v2" "k8s_node_no_floating_ip" {
   }
 
   network {
-    port = "${var.network2_name}"
+    name = "${var.network2_name}"
   }
 
   network {
