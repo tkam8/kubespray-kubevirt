@@ -232,7 +232,7 @@ resource "openstack_networking_port_v2" "port1_k8s_node_sriov" {
   fixed_ip {
     subnet_id = "${var.sriov_net1_subnet1_id}"
   }
-  binding = {
+  binding {
     vnic_type = "direct"
   }
 # SHOULD ATTACH SECURITY GROUPS HERE IN FUTURE
@@ -248,7 +248,7 @@ resource "openstack_networking_port_v2" "port2_k8s_node_sriov" {
   fixed_ip {
     subnet_id = "${var.sriov_net2_subnet1_id}"
   }
-  binding = {
+  binding {
     vnic_type = "direct"
   }
 # SHOULD ATTACH SECURITY GROUPS HERE IN FUTURE
