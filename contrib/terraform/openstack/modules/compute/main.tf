@@ -640,11 +640,11 @@ resource "openstack_compute_instance_v2" "k8s_node_no_floating_ip" {
   }
 
   network {
-    port = "${element(openstack_networking_port_v2.port1_k8s_node_sriov.*.id, count.index+1)}"
+    port = "${element(openstack_networking_port_v2.port1_k8s_node_sriov.*.id, count.index)}"
   }
 
   network {
-    port = "${element(openstack_networking_port_v2.port2_k8s_node_sriov.*.id, count.index+1)}"
+    port = "${element(openstack_networking_port_v2.port2_k8s_node_sriov.*.id, count.index)}"
   }
 
   security_groups = ["${openstack_networking_secgroup_v2.k8s.name}",
