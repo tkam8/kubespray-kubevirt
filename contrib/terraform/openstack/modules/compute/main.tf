@@ -224,7 +224,7 @@ resource "openstack_compute_servergroup_v2" "k8s_calicorr" {
 
 resource "openstack_networking_port_v2" "port1_k8s_node_sriov" {
   count          = "${var.number_of_k8s_nodes_no_floating_ip}"
-  name           ="${var.cluster_name}-port1-sriov-k8snode-${count.index+1}"
+  name           ="${var.cluster_name}-port1-sriov-k8snode-${count.index + 1}"
   network_id     = "${var.sriov_net1_id}"
   admin_state_up = "true"
 #  security_group_ids = [ "${openstack_networking_secgroup_v2.k8s.id}" , "${openstack_networking_secgroup_v2.worker.id}" ]
@@ -240,7 +240,7 @@ resource "openstack_networking_port_v2" "port1_k8s_node_sriov" {
 
 resource "openstack_networking_port_v2" "port2_k8s_node_sriov" {
   count          = "${var.number_of_k8s_nodes_no_floating_ip}"
-  name           ="${var.cluster_name}-port2-sriov-k8snode-${count.index+1}"
+  name           ="${var.cluster_name}-port2-sriov-k8snode-${count.index + 1}"
   network_id     = "${var.sriov_net2_id}"
   admin_state_up = "true"
 #  security_group_ids = [ "${openstack_networking_secgroup_v2.k8s.id}" , "${openstack_networking_secgroup_v2.worker.id}" ]
@@ -389,10 +389,6 @@ resource "openstack_compute_instance_v2" "calicorr" {
 
   network {
     name = "${var.network2_name}"
-  }
-
-  network {
-    port = "${element(openstack_networking_port_v2.port1_k8s_node_sriov.*.id, count.index+1)}"
   }
 
   security_groups = ["${openstack_networking_secgroup_v2.k8s.name}"]
@@ -640,11 +636,11 @@ resource "openstack_compute_instance_v2" "k8s_node_no_floating_ip" {
   }
 
   network {
-    port = "${element(openstack_networking_port_v2.port1_k8s_node_sriov.*.id, count.index)}"
+    port = "${element(openstack_networking_port_v2.port1_k8s_node_sriov.*.id, count.index + 1)}"
   }
 
   network {
-    port = "${element(openstack_networking_port_v2.port2_k8s_node_sriov.*.id, count.index)}"
+    port = "${element(openstack_networking_port_v2.port2_k8s_node_sriov.*.id, count.index + 1)}"
   }
 
   security_groups = ["${openstack_networking_secgroup_v2.k8s.name}",
