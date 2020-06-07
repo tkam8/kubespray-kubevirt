@@ -42,6 +42,7 @@ http {
   {% if loadbalancer_apiserver_healthcheck_port is defined -%}
   server {
     listen {{ loadbalancer_apiserver_healthcheck_port }};
+    listen [::]:{{ loadbalancer_apiserver_healthcheck_port }};
     location /healthz {
       access_log off;
       return 200;
