@@ -177,7 +177,8 @@ kube_network_node_prefix: 122
 # listening on.
 # NOTE: loadbalancer_apiserver_localhost somewhat alters the final API enpdoint
 # access IP value (automatically evaluated below)
-kube_apiserver_ip: "{{ kube_service_addresses|ipaddr('net')|ipaddr(1)|ipaddr('address') }}"
+#kube_apiserver_ip: "{{ kube_service_addresses|ipaddr('net')|ipaddr(1)|ipaddr('address') }}"
+kube_apiserver_ip: "::1"
 kube_apiserver_bind_address: "::"
 # https
 kube_apiserver_port: 6443
