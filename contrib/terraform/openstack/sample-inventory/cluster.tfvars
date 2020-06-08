@@ -37,7 +37,7 @@ number_of_k8s_nodes = 0
 
 number_of_k8s_nodes_no_floating_ip = 2
 
-flavor_k8s_node = "ed156027-0c62-4d15-828e-eb875db4cc14"
+flavor_k8s_node = "1646d52c-7872-4a92-b779-a84ec4df3364"
 
 # Calico Route Reflector nodes
 number_of_calicorr = 1
